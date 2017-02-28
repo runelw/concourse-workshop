@@ -3,4 +3,4 @@
 <p> Showed Alex</p>
 Click <a href="someotherlink.html">here</a> to go to someotherlink.html!
 <li>Random change</li>
-Click <a href="hahahawronglink.html">here</a> to go to link that is wrong on purpose!
+Click <a href="reallink.html">here</a> for breaking/working link!
