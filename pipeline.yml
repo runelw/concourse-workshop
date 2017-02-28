@@ -71,13 +71,7 @@ jobs:
           http://192.168.100.4:8080//teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
           or at:
           http://192.168.100.4:8080//builds/$BUILD_ID
-
-- name: update-production-site
-  public: true
-  plan:
-  - get: repository
-    passed: [test-site]
-  - task: update-production
+  - task: link-checker
     config:
       platform: linux
       image_resource:
@@ -89,6 +83,21 @@ jobs:
         - -exc
         - |
           linkchecker http://bl.ocks.org/sharor/raw/4b2015849c31bfb860c6a021ba9ed63a/
+    on_failure:
+      put: slack-alert
+      params:
+        channel: '#general'
+        text: |
+          The build failed. Please go correct it at:
+          http://192.168.100.4:8080//teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
+          or at:
+          http://192.168.100.4:8080//builds/$BUILD_ID
+
+- name: update-production-site
+  public: true
+  plan:
+  - get: repository
+    passed: [test-site]
   - put: github-pages
     params:
       repository: repository
