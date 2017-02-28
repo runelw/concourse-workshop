@@ -4,6 +4,8 @@ jobs:
   public: true
   plan:
   - get: repository
+    trigger: true
+  - get: gist
   - task: build
     config:
       platform: linux
@@ -12,6 +14,7 @@ jobs:
         source: {repository: praqma/gh-pages}
       inputs: 
         - name: repository
+        - name: gist
       outputs: 
         - name: site
       run:
@@ -19,14 +22,38 @@ jobs:
         args:
         - -exc
         - |
-           cd repository && jekyll build
-           cp -r _site ../site && cd ../site
-           git init && git config --global user.email "nobody@special.praqma"
+           git clone gist site
+           cd repository && jekyll build && cp _site/* ../site && cd ../site
+           git config --global user.email "nobody@special.praqma"
            git config --global user.name "praqma" && git add .
            git commit -m "updated gist"
-           
   - put: gist
-    params: {repository: site}
+    params: 
+      repository: site
+
+- name: test-site
+  public: true
+  plan: 
+  - get: repository
+    passed: [build-jekyll]
+  - task: curl-site
+    config: 
+      platform: linux
+      image_resource: 
+        type: docker-image
+        source: 
+          repository: praqma/gh-pages
+      run: 
+        path: sh
+        args: 
+        - -exc
+        - |
+          apt-get install -y curl
+          curl https://sharor.github.io/concourse-workshop
+
+
+
+
 
 resources: 
 - name: repository
@@ -40,7 +67,6 @@ resources:
 - name: gist
   type: git 
   source: 
-    uri: git@gist.github.com:e2e59ea5596c9042e1fb0e57467d7711.git
+    uri: git@gist.github.com:4b2015849c31bfb860c6a021ba9ed63a.git
     branch: master
-    username: {{github-username}}
-    password: {{github-password}}
+    private_key: {{concourse-token}}
