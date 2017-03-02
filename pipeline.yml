@@ -101,6 +101,7 @@ jobs:
   - put: github-pages
     params:
       repository: repository
+      force: true
   
 resources: 
 - name: repository
@@ -108,8 +109,7 @@ resources:
   source:
     uri: https://github.com/Sharor/concourse-workshop.git
     branch: master
-    username: {{github-username}}
-    password: {{github-password}}
+    private_key: {{concourse-token}}
 
 - name: gist
   type: git 
@@ -123,8 +123,7 @@ resources:
   source: 
     uri: https://github.com/Sharor/concourse-workshop.git
     branch: gh-pages
-    username: {{github-username}}
-    password: {{github-password}}
+    private_key: {{concourse-token}}
 
 - name: slack-alert
   type: slack-notification
