@@ -99,6 +99,7 @@ jobs:
   - put: github-pages
     params:
       repository: repository
+      force: true
   
 resources: 
 - name: repository
@@ -112,9 +113,10 @@ resources:
 - name: gist
   type: git 
   source: 
-    uri: git@gist.github.com:4b2015849c31bfb860c6a021ba9ed63a.git
+    uri: https://gist.github.com/4b2015849c31bfb860c6a021ba9ed63a.git
     branch: master
-    private_key: {{concourse-token}}
+    username: {{github-username}}
+    password: {{github-password}}
 
 - name: github-pages
   type: git
