@@ -105,7 +105,7 @@ resources:
 - name: repository
   type: git
   source:
-    uri: https://github.com/Sharor/concourse-workshop.git
+    uri: https://github.com/runelw/concourse-workshop.git
     branch: master
     username: {{github-username}}
     password: {{github-password}}
@@ -113,7 +113,7 @@ resources:
 - name: gist
   type: git 
   source: 
-    uri: https://gist.github.com/4b2015849c31bfb860c6a021ba9ed63a.git
+    uri: https://gist.github.com/24b7c4c47076bb4afea04df1ff753a9d.git
     branch: master
     username: {{github-username}}
     password: {{github-password}}
@@ -121,7 +121,7 @@ resources:
 - name: github-pages
   type: git
   source: 
-    uri: https://github.com/Sharor/concourse-workshop.git
+    uri: https://github.com/runelw/concourse-workshop.git
     branch: gh-pages
     username: {{github-username}}
     password: {{github-password}}
