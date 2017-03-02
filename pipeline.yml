@@ -1,4 +1,3 @@
----
 jobs:
 - name: build-jekyll
   public: true
@@ -92,7 +91,6 @@ jobs:
           http://192.168.100.4:8080//teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
           or at:
           http://192.168.100.4:8080//builds/$BUILD_ID
-
 - name: update-production-site
   public: true
   plan:
@@ -101,7 +99,6 @@ jobs:
   - put: github-pages
     params:
       repository: repository
-      force: true
   
 resources: 
 - name: repository
@@ -109,7 +106,8 @@ resources:
   source:
     uri: https://github.com/Sharor/concourse-workshop.git
     branch: master
-    private_key: {{concourse-token}}
+    username: {{github-username}}
+    password: {{github-password}}
 
 - name: gist
   type: git 
@@ -123,7 +121,8 @@ resources:
   source: 
     uri: https://github.com/Sharor/concourse-workshop.git
     branch: gh-pages
-    private_key: {{concourse-token}}
+    username: {{github-username}}
+    password: {{github-password}}
 
 - name: slack-alert
   type: slack-notification
