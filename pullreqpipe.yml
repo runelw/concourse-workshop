@@ -59,6 +59,7 @@ jobs:
         args:
         - -exc
         - |
+           ls
            cd git-pr 
            ls && echo "git-pr"
            cd ../git 
