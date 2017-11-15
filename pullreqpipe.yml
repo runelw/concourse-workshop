@@ -53,6 +53,7 @@ jobs:
         type: docker-image
         source: {repository: praqma/gh-pages}
       inputs: 
+        - name: git
         - name: git-pr
       run:
         path: sh
