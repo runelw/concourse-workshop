@@ -25,17 +25,7 @@ jobs:
            git clone gist site
            cd git-pr && jekyll build && cp _site/* ../site && cd ../site
            git config --global user.email "nobody@special.praqma"
-           git config --global user.name "praqma" && git add .
-           git commit -m "updated gist"
-    on_failure:
-      put: slack-alert 
-      params:
-        channel: '#general'
-        text: |
-          The build failed. Please go correct it at: 
-          http://192.168.100.4:8080//teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
-          or at:
-          http://192.168.100.4:8080//builds/$BUILD_ID
+           git config --global user.name "praqma" && git add .           
   - put: gist
     params: 
       repository: site
@@ -111,12 +101,12 @@ resources:
     password: {{github-password}}
 
 - name: git-pr
-  type: git
+  type: pull-request
   source:
-    uri: https://github.com/Sharor/concourse-workshop.git
-    branch: master
-    username: {{github-username}}
-    password: {{github-password}}
+    access_token: {{concourse-pull-request-token}}
+    private_key: {{concourse-token}}
+    repo: Sharor/concourse-workshop
+    base: master
 
   type: git
   source:
