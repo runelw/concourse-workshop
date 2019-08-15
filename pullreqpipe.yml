@@ -1,0 +1,101 @@
+jobs:
+- name: build-jekyll
+  public: true
+  plan:
+  - get: git-pr
+    trigger: true
+    version: every
+  - get: git
+    trigger: true
+  - task: build
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: praqma/gh-pages}
+      inputs: 
+        - name: git
+        - name: git-pr
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+           ls git
+           cd git-pr 
+           git config --global user.email "nobody@special.praqma"
+           git config --global user.name "praqma" && git add .     
+           git branch -avv
+           git fetch ../git master        
+           git branch -avv   
+           git rebase master
+           ls 
+           git log  
+    on_success:
+      put: git-pr
+      params:
+        path: git-pr
+        status: success
+    on_failure:
+      put: git-pr
+      params:
+        path: git-pr
+        status: failure
+  - put: git-pr
+    params:
+      path: git-pr
+      status: success
+      merge:
+        method: squash
+        commit_msg: git-pr/README.md
+
+- name: After-pull-req
+  public: true
+  plan:
+  - get: git-pr
+    passed: [build-jekyll]
+  - get: git
+    trigger: true
+  - task: build
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: praqma/gh-pages}
+      inputs: 
+        - name: git
+        - name: git-pr
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+           ls
+           cd git-pr 
+           ls && echo "git-pr"
+           cd ../git 
+           ls && echo "git-only"              
+
+resources: 
+- name: git-pr
+  type: pull-request
+  source:
+    access_token: {{concourse-pull-request-token}}
+    private_key: {{concourse-token}}
+    repo: Sharor/concourse-workshop
+    base: master
+
+- name: git
+  type: git
+  source:
+    uri: https://github.com/Sharor/concourse-workshop.git
+    branch: master
+    username: {{github-username}}
+    password: {{github-password}}
+
+resource_types:
+- name: pull-request
+  type: docker-image
+  source:
+    repository: jtarchie/pr
+    tag: v31
